@@ -11,5 +11,6 @@ libraryDependencies +="org.apache.spark" %% "spark-sql" % "2.3.0"
 //libraryDependencies +="org.apache.spark" %% "spark-avro" % "2.3.0"
 // https://mvnrepository.com/artifact/com.databricks/spark-avro
 libraryDependencies += "org.apache.spark" %% "spark-avro" % "2.4.0"
+libraryDependencies += "org.elasticsearch" %% "elasticsearch-spark-20" % "7.8.0"
 
 
