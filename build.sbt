@@ -10,6 +10,6 @@ libraryDependencies +="org.apache.spark" %% "spark-core" % "2.3.0"
 libraryDependencies +="org.apache.spark" %% "spark-sql" % "2.3.0"
 //libraryDependencies +="org.apache.spark" %% "spark-avro" % "2.3.0"
 // https://mvnrepository.com/artifact/com.databricks/spark-avro
-libraryDependencies += "org.apache" %% "spark-avro" % "2.4.0"
+libraryDependencies += "/org.apache" %% "spark-avro" % "2.4.0"
 
 
