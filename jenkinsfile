@@ -33,7 +33,7 @@ pipeline {
         stage('Run') {
             steps {
                 echo "run"
-                sh "/tmp/sbt/sbt/bin/sbt run '172.31.76.209' '/data/hotels_stays_to_es/' '/data/hotels_stays_time/'"
+                sh '/tmp/sbt/sbt/bin/sbt "runMain JenkinsSparkDemo 172.31.76.209 /data/hotels_stays_to_es/ /data/hotels_stays_time/"'
             }
         }
     }
