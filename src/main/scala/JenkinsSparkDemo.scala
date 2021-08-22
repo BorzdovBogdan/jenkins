@@ -6,33 +6,6 @@ import org.apache.spark.sql.{DataFrame, Dataset, Encoders, RelationalGroupedData
 
 object JenkinsSparkDemo {
 
-  case class Expedia(
-                      id: java.lang.Long,
-                      date_time: String,
-                      site_name: Integer,
-                      posa_continent: Integer,
-                      user_location_country: Integer,
-                      user_location_region: Integer,
-                      user_location_city: Integer,
-                      orig_destination_distance: java.lang.Double,
-                      user_id: Integer,
-                      is_mobile: Integer,
-                      is_package: Integer,
-                      channel: Integer,
-                      srch_ci: String,
-                      srch_co: String,
-                      srch_adults_cnt: Integer,
-                      srch_children_cnt: Integer,
-                      srch_rm_cnt: Integer,
-                      srch_destination_id: Integer,
-                      srch_destination_type_id: Integer,
-                      hotel_id: java.lang.Long)
-
-  case class HotelsWeather(Id: String, Name: String, Country: String, City: String,
-                           Geohash: String, wthr_date: String, avg_tmpr_f: Double, avg_tmpr_c: Double)
-
-
-  //TODO: add args
   def main(args: Array[String]) {
     val hdfsIp = args(0)
     val source_path = args(1) //"/data/hotels_stays_to_es/"
