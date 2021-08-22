@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    stages {
+        stage('Preparation') { // for display purposes
+            // Get some code from a GitHub repository
+            steps {
+                git branch: 'jenkins', url: "https://github.com/BorzdovBogdan/jenkins.git"
+                //git 'https://github.com/BorzdovBogdan/jenkins.git'
+                // Get the Maven tool.
+                // ** NOTE: This 'M3' Maven tool must be configured
+                // **       in the global configuration.
+            }
+        }
+        stage('Build') {
+            // Run the maven build
+            steps{
+                echo 'Build...'
+                sh '/tmp/sbt/sbt/bin/sbt compile'
+            }
+        }
+        /*stage('Test') {
+            steps {
+                echo "Testing..."
+                sh "/tmp/sbt/sbt/bin/sbt test"
+            }
+        }*/
+        stage('Package') {
+            steps {
+                echo "Packaging..."
+                sh "/tmp/sbt/sbt/bin/sbt package"
+            }
+        }
+        stage('Run') {
+            steps {
+                echo "run"
+                sh "/tmp/sbt/sbt/bin/sbt run '172.31.76.209' '/data/hotels_stays_to_es/' '/data/hotels_stays_time/'"
+            }
+        }
+    }
+}
