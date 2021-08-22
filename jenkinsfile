@@ -11,25 +11,25 @@ pipeline {
                 // **       in the global configuration.
             }
         }
-        /*stage('Build') {
+        stage('Package') {
             // Run the maven build
             steps{
                 echo 'Build...'
-                sh '/tmp/sbt/sbt/bin/sbt compile'
+                sh '/tmp/sbt/sbt/bin/sbt package'
             }
-        }*/
+        }
         /*stage('Test') {
             steps {
                 echo "Testing..."
                 sh "/tmp/sbt/sbt/bin/sbt test"
             }
         }*/
-        stage('Assembly') {
+        /*stage('Assembly') {
             steps {
                 echo "Assembly..."
                 sh "/tmp/sbt/sbt/bin/sbt assembly"
             }
-        }
+        }*/
         stage('Run') {
             steps {
                 echo "run"
