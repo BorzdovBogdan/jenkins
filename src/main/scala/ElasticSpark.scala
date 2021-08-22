@@ -4,7 +4,7 @@ import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types.{BooleanType, DataTypes, DateType, IntegerType, LongType, StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Dataset, Encoders, RelationalGroupedDataset, SparkSession}
 
-object ElasticSpark {
+object JenkinsSparkDemo {
 
   case class Expedia(
                       id: java.lang.Long,
