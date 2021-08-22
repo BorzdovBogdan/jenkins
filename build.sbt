@@ -2,7 +2,7 @@ name := "jenkins_demo_app"
 
 version := "0.1"
 
-scalaVersion := "2.12"
+scalaVersion := "2.12.4"
 
 libraryDependencies ++= Seq(
 "org.apache.spark" %% "spark-core" % "3.0.0",
