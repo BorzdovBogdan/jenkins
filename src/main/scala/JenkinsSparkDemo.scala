@@ -29,14 +29,14 @@ object JenkinsSparkDemo {
         .read
         .format("avro")
         .schema(hotelStaysInitSchema("_2016"))
-        .load("hdfs://" + hdfsIp + ":9000" + target_path + "2016").toDF()
+        .load("hdfs://" + hdfsIp + ":9000" + source_path + "2016").toDF()
         .withColumn("row_num", row_number().over(windSpec))
     //val timed_state = initialState.withColumn("date", expr("to_timestamp(date_add(current_date(), row_num*0.001))"))
     val dated_state = initialState.withColumn("date", col("row_num") * 1000 * 60 + System.currentTimeMillis())
     dated_state
       .write
       .format("avro")
-      .save("hdfs://" + hdfsIp + ":9000" + source_path + "2016")
+      .save("hdfs://" + hdfsIp + ":9000" + target_path + "2016")
   }
 
   private def hotelStaysInitSchema(year: String): StructType = {
