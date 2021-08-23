@@ -38,7 +38,7 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
     val timedDf = JenkinsSparkDemo.addTimeSeriesToDf(initialDf)
     JenkinsSparkDemo.writeToHdfs(hdfsIp, target_path, timedDf)
     val writtenDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, target_path)
-    writtenDf.printSchema()
+    assert(writtenDf.schema.equals(timedDf.schema))
   }
 
   override def afterEach(): Unit = {
