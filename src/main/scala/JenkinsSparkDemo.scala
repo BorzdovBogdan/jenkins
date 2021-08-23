@@ -9,13 +9,12 @@ object JenkinsSparkDemo {
   def main(args: Array[String]) {
     val hdfsIp = args(0)
     val source_path = args(1) //"/data/hotels_stays_to_es/"
-    val target_path = args(2) //"/data/hotels_stays_to_es_stream_3/"
+    val target_path = args(2) + System.currentTimeMillis().toString //"/data/hotels_stays_to_es_stream_3/"
     val spark = SparkSession
       .builder
       .master("local[*]")
       .appName("jenkins_demo")
       .getOrCreate()
-    cleanDir(target_path, hdfsIp, spark)
     writeTimeSeries(hdfsIp, source_path, target_path, spark)
   }
 
@@ -65,8 +64,10 @@ object JenkinsSparkDemo {
   }
 
   def cleanDir(path: String, hdfsIp: String, spark: SparkSession): Unit = {
-    val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+    /*val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
     val outPutPath = new Path("hdfs://" + hdfsIp + ":9000" + path + "2016")
-    fs.delete(outPutPath, true)
+    fs.delete(outPutPath, true)*/
+    import scala.sys.process._
+    s"hdfs dfs -rm -r "+path
   }
 }

@@ -17,7 +17,7 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   val testConfig = testTxtSource.mkString.split("\n")
   val hdfsIp = testConfig(0)
   val source_path = testConfig(1)
-  val target_path = testConfig(2)
+  val target_path = testConfig(2) + System.currentTimeMillis().toString
   testTxtSource.close()
   override def beforeEach(): Unit = {
     spark = new sql.SparkSession.Builder().appName("test_spark").master("local[*]").getOrCreate()
@@ -43,7 +43,6 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
     val writtenDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, target_path)
     timedDf.printSchema()
     writtenDf.printSchema()
-    JenkinsSparkDemo.cleanDir(target_path, hdfsIp, spark)
   }
 
   override def afterEach(): Unit = {
