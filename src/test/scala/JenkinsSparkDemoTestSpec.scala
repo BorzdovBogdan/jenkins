@@ -21,7 +21,6 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   testTxtSource.close()
   override def beforeEach(): Unit = {
     spark = new sql.SparkSession.Builder().appName("test_spark").master("local[*]").getOrCreate()
-    cleanDir
   }
 
   test("reading from HDFS") {
@@ -47,6 +46,7 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   override def afterEach(): Unit = {
+    cleanDir
     spark.stop()
   }
 
