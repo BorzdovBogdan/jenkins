@@ -1,8 +1,10 @@
-import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.sql
 import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+
+import java.io.File
 
 class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
 
@@ -45,7 +47,9 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
 
   override def afterEach(): Unit = {
     val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
-    fs.delete(new Nothing(target_path), true)
+    val outPutPath = new Path("/abc")
+    if (fs.exists(outPutPath))
+      fs.delete(outPutPath, true)
     spark.stop()
   }
 }
