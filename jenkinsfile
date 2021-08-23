@@ -18,12 +18,12 @@ pipeline {
                 sh '/tmp/sbt/sbt/bin/sbt package'
             }
         }
-        /*stage('Test') {
+        stage('Test') {
             steps {
                 echo "Testing..."
                 sh "/tmp/sbt/sbt/bin/sbt test"
             }
-        }*/
+        }
         /*stage('Assembly') {
             steps {
                 echo "Assembly..."
