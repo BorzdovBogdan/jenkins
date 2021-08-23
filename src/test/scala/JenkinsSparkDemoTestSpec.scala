@@ -50,6 +50,7 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   override def afterEach(): Unit = {
+    cleanDir(target_path, spark)
     spark.stop()
   }
 
