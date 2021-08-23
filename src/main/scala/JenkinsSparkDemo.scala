@@ -1,3 +1,4 @@
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions.{col, lit, monotonically_increasing_id, row_number}
 import org.apache.spark.sql.types.{BooleanType, LongType, StringType, StructField, StructType}
@@ -14,6 +15,7 @@ object JenkinsSparkDemo {
       .master("local[*]")
       .appName("jenkins_demo")
       .getOrCreate()
+    cleanDir(target_path, spark)
     writeTimeSeries(hdfsIp, source_path, target_path, spark)
   }
 
@@ -60,5 +62,12 @@ object JenkinsSparkDemo {
       StructField("most_popular_stay_type_cnt"+ year, LongType, nullable = true),
       StructField("most_popular_stay_type"+ year, StringType, nullable = true)
     ))
+  }
+
+  def cleanDir(path: String, spark: SparkSession): Unit = {
+    val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+    val outPutPath = new Path(path)
+    if (fs.exists(outPutPath))
+      fs.delete(outPutPath, true)
   }
 }

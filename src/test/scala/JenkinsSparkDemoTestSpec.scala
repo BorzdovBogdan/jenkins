@@ -46,14 +46,8 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   override def afterEach(): Unit = {
-    cleanDir
+    JenkinsSparkDemo.cleanDir(target_path, spark)
     spark.stop()
   }
 
-  private def cleanDir = {
-    val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
-    val outPutPath = new Path(target_path)
-    if (fs.exists(outPutPath))
-      fs.delete(outPutPath, true)
-  }
 }
