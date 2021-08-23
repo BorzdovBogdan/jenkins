@@ -67,7 +67,6 @@ object JenkinsSparkDemo {
   def cleanDir(path: String, hdfsIp: String, spark: SparkSession): Unit = {
     val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
     val outPutPath = new Path("hdfs://" + hdfsIp + ":9000" + path + "2016")
-    if (fs.exists(outPutPath))
-      fs.delete(outPutPath, true)
+    fs.delete(outPutPath, true)
   }
 }

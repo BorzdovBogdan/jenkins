@@ -43,10 +43,10 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
     val writtenDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, target_path)
     timedDf.printSchema()
     writtenDf.printSchema()
+    JenkinsSparkDemo.cleanDir(target_path, hdfsIp, spark)
   }
 
   override def afterEach(): Unit = {
-    JenkinsSparkDemo.cleanDir(target_path, hdfsIp, spark)
     spark.stop()
   }
 
