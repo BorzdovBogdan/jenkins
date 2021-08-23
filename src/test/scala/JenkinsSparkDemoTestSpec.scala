@@ -20,8 +20,8 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   val target_path = testConfig(2)
   testTxtSource.close()
   override def beforeEach(): Unit = {
-    cleanDir(target_path, spark)
     spark = new sql.SparkSession.Builder().appName("test_spark").master("local[*]").getOrCreate()
+    cleanDir(target_path, spark)
   }
 
   test("reading from HDFS") {
