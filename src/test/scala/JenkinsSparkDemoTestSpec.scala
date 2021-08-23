@@ -1,8 +1,9 @@
 import org.apache.spark.sql
-import org.apache.spark.sql.{SaveMode, SparkSession}
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.apache.spark.sql.SparkSession
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.BeforeAndAfterEach
 
-class JenkinsSparkDemoTestSpec extends FunSuite with BeforeAndAfterEach{
+class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
 
   var spark : SparkSession = _
   val filename = "src/test/resources/testData"
