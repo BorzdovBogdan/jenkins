@@ -25,14 +25,14 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     initialDf.printSchema()
   }
-  test("Adding time series") {
+  test("Check time series") {
     val sparkSession = spark
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     val timedDf = JenkinsSparkDemo.addTimeSeriesToDf(initialDf)
     assert(timedDf.columns.contains("date"))
   }
 
-  test("Adding time series") {
+  test("Check written time series") {
     val sparkSession = spark
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     val timedDf = JenkinsSparkDemo.addTimeSeriesToDf(initialDf)
