@@ -20,15 +20,18 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   val target_path = testConfig(2)
   testTxtSource.close()
   override def beforeEach(): Unit = {
+    cleanDir(target_path, spark)
     spark = new sql.SparkSession.Builder().appName("test_spark").master("local[*]").getOrCreate()
   }
 
   test("reading from HDFS") {
+    cleanDir(target_path, spark)
     val sparkSession = spark
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     initialDf.printSchema()
   }
   test("Check time series") {
+    cleanDir(target_path, spark)
     val sparkSession = spark
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     val timedDf = JenkinsSparkDemo.addTimeSeriesToDf(initialDf)
@@ -36,6 +39,7 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   test("Check written time series") {
+    cleanDir(target_path, spark)
     val sparkSession = spark
     val initialDf = JenkinsSparkDemo.readFromHdfs(sparkSession, hdfsIp, source_path)
     val timedDf = JenkinsSparkDemo.addTimeSeriesToDf(initialDf)
@@ -46,8 +50,14 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   override def afterEach(): Unit = {
-    JenkinsSparkDemo.cleanDir(target_path, spark)
     spark.stop()
+  }
+
+  def cleanDir(path: String, spark: SparkSession): Unit = {
+    val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+    val outPutPath = new Path(path)
+    if (fs.exists(outPutPath))
+      fs.delete(outPutPath, true)
   }
 
 }
