@@ -15,7 +15,7 @@ object JenkinsSparkDemo {
       .master("local[*]")
       .appName("jenkins_demo")
       .getOrCreate()
-    cleanDir(target_path, spark)
+    cleanDir(target_path, hdfsIp, spark)
     writeTimeSeries(hdfsIp, source_path, target_path, spark)
   }
 
@@ -36,7 +36,7 @@ object JenkinsSparkDemo {
     val windSpec = Window.partitionBy(lit(0))
       .orderBy(monotonically_increasing_id())
     val state_with_rows = initialState
-        .withColumn("row_num", row_number().over(windSpec))
+      .withColumn("row_num", row_number().over(windSpec))
     state_with_rows.withColumn("date", col("row_num") * 1000 * 60 + System.currentTimeMillis())
   }
 
@@ -54,19 +54,19 @@ object JenkinsSparkDemo {
     StructType(Array(
       StructField("init_hotel_id", LongType, nullable = true),
       StructField("erroneous_data_cnt" + year, LongType, nullable = true),
-      StructField("short_stay_cnt" + year,LongType, nullable = true),
-      StructField("standart_stay_cnt" + year,LongType, nullable = true),
-      StructField("standart_extended_stay_cnt"+ year,LongType, nullable = true),
-      StructField("long_stay_cnt"+ year, LongType, nullable = true),
-      StructField("with_children"+ year, BooleanType, nullable = true),
-      StructField("most_popular_stay_type_cnt"+ year, LongType, nullable = true),
-      StructField("most_popular_stay_type"+ year, StringType, nullable = true)
+      StructField("short_stay_cnt" + year, LongType, nullable = true),
+      StructField("standart_stay_cnt" + year, LongType, nullable = true),
+      StructField("standart_extended_stay_cnt" + year, LongType, nullable = true),
+      StructField("long_stay_cnt" + year, LongType, nullable = true),
+      StructField("with_children" + year, BooleanType, nullable = true),
+      StructField("most_popular_stay_type_cnt" + year, LongType, nullable = true),
+      StructField("most_popular_stay_type" + year, StringType, nullable = true)
     ))
   }
 
-  def cleanDir(path: String, spark: SparkSession): Unit = {
+  def cleanDir(path: String, hdfsIp: String, spark: SparkSession): Unit = {
     val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
-    val outPutPath = new Path(path)
+    val outPutPath = new Path("hdfs://" + hdfsIp + ":9000" + path + "2016")
     if (fs.exists(outPutPath))
       fs.delete(outPutPath, true)
   }
