@@ -1,8 +1,7 @@
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.functions.{broadcast, col, current_date, current_timestamp, date_add, datediff, expr, from_json, from_unixtime, greatest, lit, monotonically_increasing_id, row_number, struct, sum, to_date, to_json, to_timestamp, unix_timestamp, when, window}
-import org.apache.spark.sql.streaming.Trigger
-import org.apache.spark.sql.types.{BooleanType, DataTypes, DateType, IntegerType, LongType, StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Dataset, Encoders, RelationalGroupedDataset, SparkSession}
+import org.apache.spark.sql.functions.{col, lit, monotonically_increasing_id, row_number}
+import org.apache.spark.sql.types.{BooleanType, LongType, StringType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object JenkinsSparkDemo {
 
@@ -10,33 +9,43 @@ object JenkinsSparkDemo {
     val hdfsIp = args(0)
     val source_path = args(1) //"/data/hotels_stays_to_es/"
     val target_path = args(2) //"/data/hotels_stays_to_es_stream_3/"
-    add_time_series_to_df(hdfsIp, source_path, target_path)
-  }
-
-  def add_time_series_to_df(hdfsIp: String, source_path: String, target_path: String): Unit = {
-
     val spark = SparkSession
       .builder
       .master("local[*]")
       .appName("jenkins_demo")
       .getOrCreate()
+    writeTimeSeries(hdfsIp, source_path, target_path, spark)
+  }
 
+  def writeTimeSeries(hdfsIp: String, source_path: String, target_path: String, spark: SparkSession): Unit = {
+    val initialState: DataFrame = readFromHdfs(spark, hdfsIp, source_path)
+    val dated_state = addTimeSeriesToDf(initialState)
+    writeToHdfs(hdfsIp, target_path, dated_state)
+  }
+
+  def writeToHdfs(hdfsIp: String, target_path: String, dated_state: DataFrame): Unit = {
+    dated_state
+      .write
+      .format("avro")
+      .save("hdfs://" + hdfsIp + ":9000" + target_path + "2016")
+  }
+
+  def addTimeSeriesToDf(initialState: DataFrame): DataFrame = {
     val windSpec = Window.partitionBy(lit(0))
       .orderBy(monotonically_increasing_id())
+    val state_with_rows = initialState
+        .withColumn("row_num", row_number().over(windSpec))
+    state_with_rows.withColumn("date", col("row_num") * 1000 * 60 + System.currentTimeMillis())
+  }
 
+  def readFromHdfs(spark: SparkSession, hdfsIp: String, source_path: String): DataFrame = {
     val initialState =
       spark
         .read
         .format("avro")
         .schema(hotelStaysInitSchema("_2016"))
         .load("hdfs://" + hdfsIp + ":9000" + source_path + "2016").toDF()
-        .withColumn("row_num", row_number().over(windSpec))
-    //val timed_state = initialState.withColumn("date", expr("to_timestamp(date_add(current_date(), row_num*0.001))"))
-    val dated_state = initialState.withColumn("date", col("row_num") * 1000 * 60 + System.currentTimeMillis())
-    dated_state
-      .write
-      .format("avro")
-      .save("hdfs://" + hdfsIp + ":9000" + target_path + "2016")
+    initialState
   }
 
   private def hotelStaysInitSchema(year: String): StructType = {
