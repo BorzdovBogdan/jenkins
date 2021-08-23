@@ -1,3 +1,4 @@
+import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql
 import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
@@ -43,6 +44,8 @@ class JenkinsSparkDemoTestSpec extends AnyFunSuite with BeforeAndAfterEach{
   }
 
   override def afterEach(): Unit = {
+    val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+    fs.delete(new Nothing(target_path), true)
     spark.stop()
   }
 }
